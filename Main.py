@@ -1,5 +1,6 @@
-from posixpath import commonpath
 from tkinter import *
+import tkinter.messagebox as tmsg
+import tkinter.filedialog as tkfile
 import os, time
 
 class Notepad(Tk):
@@ -14,8 +15,8 @@ class Notepad(Tk):
     
     def addFileMenu(self):
         self.fileMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
-        self.fileMenu.add_command(label='New', command=lambda : os.startfile('Main.py'), accelerator='Ctrl+N')
-        self.fileMenu.add_command(label='Open...', accelerator='Ctrl+O')
+        self.fileMenu.add_command(label='New', command=self.startNotepad, accelerator='Ctrl+N')
+        self.fileMenu.add_command(label='Open...', accelerator='Ctrl+O', command=self.openFileNotepad)
         self.fileMenu.add_command(label='Save', accelerator='Ctrl+S')
         self.fileMenu.add_command(label='Save As...')
         self.fileMenu.add_separator()
@@ -53,14 +54,15 @@ class Notepad(Tk):
 
     def addHelpMenu(self):
         self.helpMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
-        self.helpMenu.add_command(label='View Help')
+        self.helpMenu.add_command(label='View Help', command=self.helpNotepad)
         self.helpMenu.add_separator()
-        self.helpMenu.add_command(label='About Notepad')
+        self.helpMenu.add_command(label='About Notepad', command=self.aboutNotepad)
         self.mainMenu.add_cascade(label='Help', menu=self.helpMenu)
 
     def addTextBox(self):
         self.textBox = Text(self, bd=0, wrap=WORD, font=('Consolas', 20), highlightthickness=0, relief=FLAT, selectborderwidth=0, padx=8, pady=3, selectforeground='white', undo=True)
         self.textBox.pack(fill=BOTH, expand=YES, side=RIGHT, pady=1)
+        self.textboxFont = {'family':'Consolas', 'size':20, 'weight':'normal', 'slant':'roman', 'underline':0, 'overstrike':0}
         self.textBoxinfo = self.textBox.pack_info()
         self.verticalScrollbar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.verticalScrollbar.set, xscrollcommand=self.horizontalScrollbar.set)
@@ -119,6 +121,49 @@ class Notepad(Tk):
             self.updateNotepad()
         else:
             self.statusBar.pack_forget()
+    
+    def statusBarUpdate(self):
+        pos = self.textBox.index(INSERT).split('.')
+        pos = f'Ln {pos[0]}, Col {pos[1]}'+' '*30
+        self.statusBar.config(text=pos)
+        self.after(2, self.statusBarUpdate)
+
+    def helpNotepad(self):
+        tmsg.showinfo('Help', 'This Key Only in Construction, Wait For Website')
+
+    def aboutNotepad(self):
+        tmsg.showinfo('About Notepad', 'This is a Notepad made by a Loser In Free Time.')
+
+    def startNotepad(self):
+        notepadNew = Notepad()
+        notepadNew.menuBar()
+        notepadNew.addFileMenu()
+        notepadNew.addEditMenu()
+        notepadNew.addFormatMenu()
+        notepadNew.addViewMenu()
+        notepadNew.addHelpMenu()
+        notepadNew.addStatusBar()
+        notepadNew.addHorizontalScrollbar()
+        notepadNew.addVerticalScrollbar()
+        notepadNew.addTextBox()
+        notepadNew.statusBarUpdate()
+        notepadNew.mainloop()
+
+    def openFileNotepad(self):
+        if self.title() == 'Untitled - Notepad' and self.textBox.get('1.0', END)=='\n':
+            self.fileToOpen = tkfile.askopenfilename()
+            with open(self.fileToOpen) as f:
+                self.text_ = f.read()
+            self.textBox.insert(END, self.text_)
+            self.title(f'{self.fileToOpen} - Notepad')
+        else:
+            pass
+
+    # def saveFileNotepad(self):
+    #     self.fileToSave = tkfile.asksaveasfilename()
+    #     self.text2_ = self.textBox.get('1.0', END)
+    #     with open(self.fileToSave, 'w') as f:
+
 
 if __name__ == '__main__':
     notepad = Notepad()
@@ -132,4 +177,5 @@ if __name__ == '__main__':
     notepad.addHorizontalScrollbar()
     notepad.addVerticalScrollbar()
     notepad.addTextBox()
+    notepad.statusBarUpdate()
     notepad.mainloop()
