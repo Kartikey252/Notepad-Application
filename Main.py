@@ -4,6 +4,10 @@ import tkinter.filedialog as tkfile
 import os, time
 
 class Notepad(Tk):
+    
+    saveDialogCheck = False
+    filename = ''
+
     def __init__(self) -> None:
         super().__init__()
         self.geometry('700x400+250+250')
@@ -17,7 +21,7 @@ class Notepad(Tk):
         self.fileMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
         self.fileMenu.add_command(label='New', command=self.startNotepad, accelerator='Ctrl+N')
         self.fileMenu.add_command(label='Open...', accelerator='Ctrl+O', command=self.openFileNotepad)
-        self.fileMenu.add_command(label='Save', accelerator='Ctrl+S')
+        self.fileMenu.add_command(label='Save', accelerator='Ctrl+S', command=self.saveFileNotepad)
         self.fileMenu.add_command(label='Save As...')
         self.fileMenu.add_separator()
         self.fileMenu.add_command(label='Exit', command=quit)
@@ -61,7 +65,7 @@ class Notepad(Tk):
 
     def addTextBox(self):
         self.textBox = Text(self, bd=0, wrap=WORD, font=('Consolas', 20), highlightthickness=0, relief=FLAT, selectborderwidth=0, padx=8, pady=3, selectforeground='white', undo=True)
-        self.textBox.pack(fill=BOTH, expand=YES, side=RIGHT, pady=1)
+        self.textBox.pack(fill=BOTH, expand=YES, side=RIGHT, pady=00.1)
         self.textboxFont = {'family':'Consolas', 'size':20, 'weight':'normal', 'slant':'roman', 'underline':0, 'overstrike':0}
         self.textBoxinfo = self.textBox.pack_info()
         self.verticalScrollbar.config(command=self.textBox.yview)
@@ -134,35 +138,67 @@ class Notepad(Tk):
     def aboutNotepad(self):
         tmsg.showinfo('About Notepad', 'This is a Notepad made by a Loser In Free Time.')
 
-    def startNotepad(self):
-        notepadNew = Notepad()
-        notepadNew.menuBar()
-        notepadNew.addFileMenu()
-        notepadNew.addEditMenu()
-        notepadNew.addFormatMenu()
-        notepadNew.addViewMenu()
-        notepadNew.addHelpMenu()
-        notepadNew.addStatusBar()
-        notepadNew.addHorizontalScrollbar()
-        notepadNew.addVerticalScrollbar()
-        notepadNew.addTextBox()
-        notepadNew.statusBarUpdate()
-        notepadNew.mainloop()
+    def newNote(self):
+        self.textBox.delete("1.0", END)
+        self.title('Untitled - Notepad')
+        self.filename = ''
 
-    def openFileNotepad(self):
-        if self.title() == 'Untitled - Notepad' and self.textBox.get('1.0', END)=='\n':
-            self.fileToOpen = tkfile.askopenfilename()
-            with open(self.fileToOpen) as f:
-                self.text_ = f.read()
-            self.textBox.insert(END, self.text_)
-            self.title(f'{self.fileToOpen} - Notepad')
+    def startNotepad(self):
+        if self.filename:
+            with open(self.title()[:-1]) as f:
+                txt = f.read()
+            if txt+'\n' == self.textBox.get("1.0", END):
+                self.newNote()
+            else:
+                pass
         else:
+            if self.textBox.get("1.0", END) == '\n':
+                self.newNote()
+            else:
+                pass
+
+    def openNote(self):
+        try:
+            filename = tkfile.askopenfilename()
+            with open(filename, 'r') as f:
+                txt = f.read()
+            self.textBox.delete("1.0", END)
+            self.textBox.insert("1.0", txt)
+            self.title(f'{filename} - Notepad')
+        except:
             pass
 
-    # def saveFileNotepad(self):
-    #     self.fileToSave = tkfile.asksaveasfilename()
-    #     self.text2_ = self.textBox.get('1.0', END)
-    #     with open(self.fileToSave, 'w') as f:
+    def openFileNotepad(self):
+        if self.filename:
+            with open(self.title()[:-10], 'r') as f:
+                txt = f.read()
+            if txt+'\n' == self.textBox.get("1.0", END):
+                self.openNote()
+            else:
+                pass
+        else:
+            if self.textBox.get("1.0", END) == '\n':
+                self.openNote()
+            else:
+                pass
+
+    def saveFile(self):
+        try:
+            filename = tkfile.askopenfilename()
+            if not filename:
+                with open(filename, 'w') as f:
+                    f.write(self.textBox.get("1.0", END)[:-1])
+                self.title(f'{filename} - Notepad')
+                return True
+            else:
+                return False
+        except:
+            return False
+
+        
+
+    def saveFileNotepad(self):
+        pass
 
 
 if __name__ == '__main__':
