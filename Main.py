@@ -102,9 +102,9 @@ class Notepad(Tk):
         self.mainMenu.add_cascade(label='Help', menu=self.helpMenu)
 
     def addTextBox(self):
+        """ Adds TextBox in App """
         self.textBox = Text(self, bd=0, wrap=WORD, font=('Consolas', 20), highlightthickness=0, relief=FLAT, selectborderwidth=0, padx=8, pady=3, selectforeground='white', undo=True, border=0, borderwidth=0)
         self.textBox.pack(fill=BOTH, expand=YES, side=RIGHT, pady=00.1)
-        self.textboxFont = {'family':'Consolas', 'size':20, 'weight':'normal', 'slant':'roman', 'underline':0, 'overstrike':0}
         self.textBoxinfo = self.textBox.pack_info()
         self.verticalScrollbar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.verticalScrollbar.set, xscrollcommand=self.horizontalScrollbar.set)
@@ -116,17 +116,20 @@ class Notepad(Tk):
         self.textBox.focus()
 
     def addVerticalScrollbar(self):
+        """ Adds Vertical Scrollbar For Textbox """
         self.verticalScrollbar = Scrollbar(self, orient=VERTICAL, bd=0, relief=FLAT)
         self.verticalScrollbar.pack(fill=Y, expand=NO, side=RIGHT, pady=1)
         self.verticalScrollbarinfo = self.verticalScrollbar.pack_info()
 
     def addHorizontalScrollbar(self):
+        """ Adds Horizontal Scrollbar For Textbox """
         self.horizontalScrollbar = Scrollbar(self, orient=HORIZONTAL, bd=0, relief=FLAT)
         self.horizontalScrollbar.pack(side=BOTTOM, expand=YES, fill=X, anchor=CENTER)
         self.horizontalScrollbarinfo = self.horizontalScrollbar.pack_info()
         self.horizontalScrollbar.pack_forget()
 
     def __updateNotepad(self):
+        """ Udates Notepad Every time When Selects 'Word Wrap' Or 'Status Bar' Option"""
         if self.statusBarCheck.get() and not self.wordWrap.get():
             self.statusBar.pack(self.statusBarinfo)
         if not self.wordWrap.get():
@@ -135,12 +138,14 @@ class Notepad(Tk):
         self.textBox.pack(self.textBoxinfo)
 
     def addStatusBar(self):
+        """ Add Status Bar to App """
         self.statusBar = Label(self, text='Status', anchor=E)
         self.statusBar.pack(side=BOTTOM, expand=YES, fill=X, anchor=CENTER)
         self.statusBarinfo = self.statusBar.pack_info()
         self.statusBar.pack_forget()
 
     def __delete(self):
+        """ Deletes the Selected Part """
         try:
             if not self.textBox.selection_get():
                 pass
@@ -150,10 +155,13 @@ class Notepad(Tk):
             pass
 
     def __Datetime(self, event=None):
+        """ Enters Time And Date in Document
+                Format-> {Hour:Minutes Date-Month-Year} """
         self.__delete()
         self.textBox.insert('insert', datetime.datetime.now().strftime('%H:%M %d-%m-%Y'))
 
     def __wordWrap_(self):
+        """ Enables/Disables Word Wrap Function """
         if self.wordWrap.get():
             self.textBox.config(wrap=WORD)
             self.horizontalScrollbar.pack_forget()
@@ -163,29 +171,35 @@ class Notepad(Tk):
             self.__updateNotepad()
     
     def __statusBar_(self):
+        """ Shows/Hides Status Bar in App """
         if self.statusBarCheck.get() and not self.wordWrap.get():
             self.__updateNotepad()
         else:
             self.statusBar.pack_forget()
     
     def statusBarUpdate(self):
+        """ Updates Status Bar after Each 2 Mili Seconds"""
         pos = self.textBox.index(INSERT).split('.')
         pos = f'Ln {pos[0]}, Col {int(pos[1])+1}'+' '*30
         self.statusBar.config(text=pos)
         self.after(2, self.statusBarUpdate)
 
     def __helpNotepad(self):
+        """ Shows Help For Application """
         tmsg.showinfo('Help', 'This Key Only in Construction, Wait For Website')
 
     def __aboutNotepad(self):
+        """ Tells About Notepad """
         tmsg.showinfo('About Notepad', 'This is a Notepad made by a Loser In Free Time.')
 
     def __newNote(self):
+        """ New Document """
         self.textBox.delete("0.0", END)
         self.title('Untitled - Notepad')
         self.filename = ''
 
     def __startNotepad(self, event=None):
+        """ Make App Run From Beginning """
         if self.filename:
             with open(self.filename, 'r') as f:
                 txt = f.read()
@@ -200,6 +214,7 @@ class Notepad(Tk):
                 self.__actionForFile(self.__newNote)
 
     def __openNote(self):
+        """ Opens File """
         try:
             filename = tkfile.askopenfilename()
             with open(filename, 'r') as f:
@@ -212,6 +227,7 @@ class Notepad(Tk):
             pass
 
     def __openFileNotepad(self, event=None):
+        """ Opens A File """
         if self.filename:
             with open(self.filename, 'r') as f:
                 txt = f.read()
@@ -226,6 +242,13 @@ class Notepad(Tk):
                 self.__actionForFile(self.__openNote)
 
     def __saveFile(self, event=None, saveAs=False):
+        """ Save File
+        parametes :
+            SaveAs == True
+                Run Function for Save As Function
+            SaveAs == False
+                Run Function for Save Only
+        """
         if self.filename and not saveAs:
             with open(self.filename, 'w') as f:
                 f.write(self.textBox.get("1.0", END)[:-1])
@@ -244,6 +267,9 @@ class Notepad(Tk):
             return False
 
     def __actionForFile(self, funcToPerform):
+        """ Perform Action Pass As its Parameter.
+        Asks for Saving File And Then Perform the Passed Function.
+        """
         dialog = tmsg.askyesnocancel('Notepad', 'Do you want to save this file ?')
         if dialog == None:
             pass
@@ -255,6 +281,7 @@ class Notepad(Tk):
                 funcToPerform()
 
     def __whenExit(self, event=None):
+        """ Performed When Exitting App """
         if self.filename:
             with open(self.filename, 'r') as f:
                 txt = f.read()
@@ -269,6 +296,7 @@ class Notepad(Tk):
                 self.__actionForFile(self.quit)
 
     def bindKeys(self):
+        """ Adding Key Shortcuts To App """
         self.bind('<Control-n>', self.__startNotepad)
         self.bind('<Control-o>', self.__openFileNotepad)
         self.bind('<Control-s>', self.__saveFile)
