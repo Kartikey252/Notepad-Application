@@ -1,14 +1,16 @@
-# Importing Tkinter, os and Datetime Modules
+# Importing tkinter, tkfontchooser, os and Datetime Modules
 from tkinter import *
+from tkinter.font import Font
 import tkinter.messagebox as tmsg
 import tkinter.filedialog as tkfile
+from tkfontchooser import askfont
 import os, datetime
 
 # Creating a Notepad Class
 class Notepad(Tk):
 
     # Name of File Opened
-    filename = ''
+    __filename = ''
 
     def __init__(self) -> None:
         """ Takes Methods From Tk Class of Tkinter Module """
@@ -75,7 +77,7 @@ class Notepad(Tk):
         self.wordWrap = IntVar()
         self.wordWrap.set(1)
         self.formatMenu.add_checkbutton(label='Word Wrap', variable=self.wordWrap, command=self.__wordWrap_)
-        self.formatMenu.add_command(label='Font...')
+        self.formatMenu.add_command(label='Font...', command=self.__Font)
         self.mainMenu.add_cascade(label='Format', menu=self.formatMenu)
 
     def addViewMenu(self):
@@ -104,7 +106,8 @@ class Notepad(Tk):
     def addTextBox(self):
         """ Adds TextBox in App """
         self.textBox = Text(self, bd=0, wrap=WORD, font=('Consolas', 20), highlightthickness=0, relief=FLAT, selectborderwidth=0, padx=8, pady=3, selectforeground='white', undo=True, border=0, borderwidth=0)
-        self.textBox.pack(fill=BOTH, expand=YES, side=RIGHT, pady=00.1)
+        self.textBox.pack(fill=BOTH, expand=YES, side=RIGHT, pady=0.1)
+        self.textFont = {'family':'Consolas', 'size':20, 'weight':'normal', 'slant':'roman', 'underline':0, 'overstrike':0}
         self.textBoxinfo = self.textBox.pack_info()
         self.verticalScrollbar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.verticalScrollbar.set, xscrollcommand=self.horizontalScrollbar.set)
@@ -196,12 +199,12 @@ class Notepad(Tk):
         """ New Document """
         self.textBox.delete("0.0", END)
         self.title('Untitled - Notepad')
-        self.filename = ''
+        self.__filename = ''
 
     def __startNotepad(self, event=None):
         """ Make App Run From Beginning """
-        if self.filename:
-            with open(self.filename, 'r') as f:
+        if self.__filename:
+            with open(self.__filename, 'r') as f:
                 txt = f.read()
             if txt+'\n' == self.textBox.get("1.0", END):
                 self.__newNote()
@@ -222,14 +225,14 @@ class Notepad(Tk):
             self.textBox.delete("1.0", END)
             self.textBox.insert("1.0", txt)
             self.title(f'{filename} - Notepad')
-            self.filename = filename
+            self.__filename = filename
         except:
             pass
 
     def __openFileNotepad(self, event=None):
         """ Opens A File """
-        if self.filename:
-            with open(self.filename, 'r') as f:
+        if self.__filename:
+            with open(self.__filename, 'r') as f:
                 txt = f.read()
             if txt+'\n' == self.textBox.get("1.0", END):
                 self.__openNote()
@@ -249,8 +252,8 @@ class Notepad(Tk):
             SaveAs == False
                 Run Function for Save Only
         """
-        if self.filename and not saveAs:
-            with open(self.filename, 'w') as f:
+        if self.__filename and not saveAs:
+            with open(self.__filename, 'w') as f:
                 f.write(self.textBox.get("1.0", END)[:-1])
             return True
         try:
@@ -259,7 +262,7 @@ class Notepad(Tk):
                 with open(filename, 'w') as f:
                     f.write(self.textBox.get("1.0", END)[:-1])
                 self.title(f'{filename} - Notepad')
-                self.filename = filename
+                self.__filename = filename
                 return True
             else:
                 return False
@@ -282,8 +285,8 @@ class Notepad(Tk):
 
     def __whenExit(self, event=None):
         """ Performed When Exitting App """
-        if self.filename:
-            with open(self.filename, 'r') as f:
+        if self.__filename:
+            with open(self.__filename, 'r') as f:
                 txt = f.read()
             if txt == self.textBox.get("1.0", END)[:-1]:
                 self.quit()
@@ -309,6 +312,13 @@ class Notepad(Tk):
         self.bind('<Control-c>', lambda x: self.textBox.event_generate('<<Copy>>'))
         self.bind('<Control-v>', lambda x: self.textBox.event_generate('<<Paste>>'))
         self.bind('<Control-a>', lambda x: self.textBox.tag_add(SEL, '1.0', END))
+
+    def __Font(self):
+        font = askfont(self, "ABCD abcd", title='Font', family=self.textFont['family'], size=self.textFont['size'], weight=self.textFont['weight'], slant=self.textFont['slant'], underline=self.textFont['underline'], overstrike=self.textFont['overstrike'])
+        if font:
+            font_ = Font(family=font['family'], size=font['size'], weight=font['weight'], slant=font['slant'], underline=font['underline'], overstrike=font['overstrike'])
+            self.textBox.config(font=font_)
+            self.textFont = font
 
         
 
