@@ -1,10 +1,10 @@
-# Importing tkinter, tkfontchooser, os and Datetime Modules
+# Importing tkinter, tkfontchooser and Datetime Modules
 from tkinter import *
 from tkinter.font import Font
 import tkinter.messagebox as tmsg
 import tkinter.filedialog as tkfile
 from tkfontchooser import askfont
-import os, datetime
+import datetime
 
 # Creating a Notepad Class
 class Notepad(Tk):
