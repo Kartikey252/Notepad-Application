@@ -17,4 +17,4 @@ App.addVerticalScrollbar() # Adding The Vertical Scrollbar
 App.addTextBox() # Adding Text Box
 App.statusBarUpdate() # Updating Status Bar
 App.bindKeys() # Adding Key Shortcuts for Certain Functions
-App.mainloop()
+App.mainloop() # Add Mainloop for App

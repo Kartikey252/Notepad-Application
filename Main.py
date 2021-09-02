@@ -107,7 +107,7 @@ class Notepad(Tk):
         """ Adds TextBox in App """
         self.textBox = Text(self, bd=0, wrap=WORD, font=('Consolas', 20), highlightthickness=0, relief=FLAT, selectborderwidth=0, padx=8, pady=3, selectforeground='white', undo=True, border=0, borderwidth=0)
         self.textBox.pack(fill=BOTH, expand=YES, side=RIGHT, pady=0.1)
-        self.textFont = {'family':'Consolas', 'size':20, 'weight':'normal', 'slant':'roman', 'underline':0, 'overstrike':0}
+        self.__textFont = {'family':'Consolas', 'size':20, 'weight':'normal', 'slant':'roman', 'underline':0, 'overstrike':0}
         self.textBoxinfo = self.textBox.pack_info()
         self.verticalScrollbar.config(command=self.textBox.yview)
         self.textBox.config(yscrollcommand=self.verticalScrollbar.set, xscrollcommand=self.horizontalScrollbar.set)
@@ -315,11 +315,11 @@ class Notepad(Tk):
 
     def __Font(self):
         """ Changes Font in App """
-        font = askfont(self, "ABCD abcd", title='Font', family=self.textFont['family'], size=self.textFont['size'], weight=self.textFont['weight'], slant=self.textFont['slant'], underline=self.textFont['underline'], overstrike=self.textFont['overstrike'])
+        font = askfont(self, "ABCD abcd", title='Font', family=self.__textFont['family'], size=self.__textFont['size'], weight=self.__textFont['weight'], slant=self.__textFont['slant'], underline=self.__textFont['underline'], overstrike=self.__textFont['overstrike'])
         if font:
             font_ = Font(family=font['family'], size=font['size'], weight=font['weight'], slant=font['slant'], underline=font['underline'], overstrike=font['overstrike'])
             self.textBox.config(font=font_)
-            self.textFont = font
+            self.__textFont = font
 
         
 
