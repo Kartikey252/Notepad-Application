@@ -1,22 +1,35 @@
+# Importing Tkinter, os and Datetime Modules
 from tkinter import *
 import tkinter.messagebox as tmsg
 import tkinter.filedialog as tkfile
 import os, datetime
 
+# Creating a Notepad Class
 class Notepad(Tk):
 
+    # Name of File Opened
     filename = ''
 
     def __init__(self) -> None:
+        """ Takes Methods From Tk Class of Tkinter Module """
         super().__init__()
         self.geometry('700x400+250+250')
         self.title('Untitled - Notepad')
 
-    def menuBar(self):
+    def menuBar(self) -> None:
+        """ Adds Menubar in App """
         self.mainMenu = Menu(self, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
         self.config(menu=self.mainMenu)
     
-    def addFileMenu(self):
+    def addFileMenu(self) -> None:
+        """ Adds File Menu in Menubar 
+        File Menu Contains:
+            New -> Make App Run From Beginning
+            Open -> Opens A File
+            Save -> Saves File
+            Save As.. -> Saves File as a New One, even if File Exists
+            Exit -> Quits Application
+        """
         self.fileMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
         self.fileMenu.add_command(label='New', command=self.__startNotepad, accelerator='Ctrl+N')
         self.fileMenu.add_command(label='Open...', accelerator='Ctrl+O', command=self.__openFileNotepad)
@@ -26,7 +39,19 @@ class Notepad(Tk):
         self.fileMenu.add_command(label='Exit', command=self.__whenExit)
         self.mainMenu.add_cascade(label='File', menu=self.fileMenu)
 
-    def addEditMenu(self):
+    def addEditMenu(self) -> None:
+        """ Adds Edit Menu in Menubar 
+        Edit Menu Contains:
+            Undo -> Erases last change in document
+            Redo -> Redoes the Erased change in document
+            Cut -> Cuts the Selected Part
+            Copy -> Copies the Selected Part
+            Paste -> Paste the Copy/Cut part
+            Delete -> Deletes the Selected Part
+            Select All -> Selects all Document
+            Time/Date -> Enters Time And Date in Document
+                Format-> {Hour:Minutes Date-Month-Year}
+        """
         self.editMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0,)
         self.editMenu.add_command(label='Undo', command=lambda: self.textBox.event_generate('<<Undo>>'), accelerator='Ctrl+Z')
         self.editMenu.add_command(label='Redo', command=lambda: self.textBox.event_generate('<<Redo>>'), accelerator='Ctrl+Y')
@@ -41,6 +66,11 @@ class Notepad(Tk):
         self.mainMenu.add_cascade(label='Edit', menu=self.editMenu)
 
     def addFormatMenu(self):
+        """ Adds Format Menu in Menubar 
+        Format Menu Contains:
+            Word Wrap -> Enables/Disables Word Wrap Function
+            Font... -> Change Font of Document
+        """
         self.formatMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
         self.wordWrap = IntVar()
         self.wordWrap.set(1)
@@ -49,6 +79,10 @@ class Notepad(Tk):
         self.mainMenu.add_cascade(label='Format', menu=self.formatMenu)
 
     def addViewMenu(self):
+        """ Adds View Menu in Menubar 
+        View Menu Contains:
+            Status Bar -> Shows/Hides Status Bar
+        """
         self.viewMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
         self.statusBarCheck = IntVar()
         self.statusBarCheck.set(0)
@@ -56,6 +90,11 @@ class Notepad(Tk):
         self.mainMenu.add_cascade(label='View', menu=self.viewMenu)
 
     def addHelpMenu(self):
+        """ Adds Help Menu in Menubar 
+        Help Menu Contains:
+            View Help -> Shows Help For Application
+            About Notepad -> Tells About Notepad
+        """
         self.helpMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
         self.helpMenu.add_command(label='View Help', command=self.__helpNotepad)
         self.helpMenu.add_separator()
@@ -246,17 +285,5 @@ class Notepad(Tk):
         
 
 if __name__ == '__main__':
-    notepad = Notepad()
-    notepad.menuBar()
-    notepad.addFileMenu()
-    notepad.addEditMenu()
-    notepad.addFormatMenu()
-    notepad.addViewMenu()
-    notepad.addHelpMenu()
-    notepad.addStatusBar()
-    notepad.addHorizontalScrollbar()
-    notepad.addVerticalScrollbar()
-    notepad.addTextBox()
-    notepad.statusBarUpdate()
-    notepad.bindKeys()
-    notepad.mainloop()
+    print("Please Run 'Notepad.py'\n")
+    input()
