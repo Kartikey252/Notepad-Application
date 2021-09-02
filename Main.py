@@ -305,6 +305,7 @@ class Notepad(Tk):
         self.bind('<Control-s>', self.__saveFile)
         self.bind('<Control-Shift-s>', lambda x : self.__saveFile(saveAs=True))
         self.protocol('WM_DELETE_WINDOW', self.__whenExit)
+        self.textBox.bind('<Button-3>', self.__doPopUpRightMenu)
         self.bind('<F5>', self.__Datetime)
         self.bind('<Control-z>', lambda x: self.textBox.event_generate('<<Undo>>'))
         self.bind('<Control-y>', lambda x: self.textBox.event_generate('<<Redo>>'))
@@ -321,6 +322,25 @@ class Notepad(Tk):
             self.textBox.config(font=font_)
             self.__textFont = font
 
+    def addRightClickMenu(self):
+        """ Adds Right Click Menu """
+        self.rightMenu = Menu(self, tearoff=0)
+        self.rightMenu.add_command(label='Undo'+' '*25, command=lambda : self.textBox.event_generate('<<Undo>>'))
+        self.rightMenu.add_command(label='Redo', command=lambda : self.textBox.event_generate('<<Redo>>'))
+        self.rightMenu.add_separator()
+        self.rightMenu.add_command(label='Cut', command=lambda : self.textBox.event_generate('<<Cut>>'))
+        self.rightMenu.add_command(label='Copy', command=lambda : self.textBox.event_generate('<<Copy>>'))
+        self.rightMenu.add_command(label='Paste', command=lambda : self.textBox.event_generate('<<Paste>>'))
+        self.rightMenu.add_command(label='Select All', command=lambda : self.textBox.tag_add(SEL, '1.0', END))
+        self.rightMenu.add_separator()
+        self.rightMenu.add_command(label='Exit', command=self.__whenExit)
+
+    def __doPopUpRightMenu(self, evnt=None):
+        """ Pops Up Right Click Menu """
+        try:
+            self.rightMenu.tk_popup(self.winfo_pointerx(), self.winfo_pointery())
+        finally:
+            self.grab_release()
         
 
 if __name__ == '__main__':

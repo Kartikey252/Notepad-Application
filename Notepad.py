@@ -6,6 +6,7 @@ from Main import Notepad
 
 App = Notepad() 
 App.menuBar() # Creating Main Menu
+App.addRightClickMenu() # Creating Right Click Menu
 App.addFileMenu() # Adding File Menu
 App.addEditMenu() # Adding Edit Menu
 App.addFormatMenu() # Adding Format Menu
