@@ -16,7 +16,7 @@ class Notepad(Tk):
         """ Takes Methods From Tk Class of Tkinter Module """
         super().__init__()
         self.geometry('700x400+250+250')
-        self.title('Untitled - Notepad')
+        self.title('Untitled - Notepad App')
 
     def menuBar(self) -> None:
         """ Adds Menubar in App """
@@ -198,7 +198,7 @@ class Notepad(Tk):
     def __newNote(self):
         """ New Document """
         self.textBox.delete("0.0", END)
-        self.title('Untitled - Notepad')
+        self.title('Untitled - Notepad App')
         self.__filename = ''
 
     def __startNotepad(self, event=None):
@@ -224,7 +224,7 @@ class Notepad(Tk):
                 txt = f.read()
             self.textBox.delete("1.0", END)
             self.textBox.insert("1.0", txt)
-            self.title(f'{filename} - Notepad')
+            self.title(f'{filename} - Notepad App')
             self.__filename = filename
         except:
             pass
@@ -261,7 +261,7 @@ class Notepad(Tk):
             if filename:
                 with open(filename, 'w') as f:
                     f.write(self.textBox.get("1.0", END)[:-1])
-                self.title(f'{filename} - Notepad')
+                self.title(f'{filename} - Notepad App')
                 self.__filename = filename
                 return True
             else:
@@ -314,6 +314,7 @@ class Notepad(Tk):
         self.bind('<Control-a>', lambda x: self.textBox.tag_add(SEL, '1.0', END))
 
     def __Font(self):
+        """ Changes Font in App """
         font = askfont(self, "ABCD abcd", title='Font', family=self.textFont['family'], size=self.textFont['size'], weight=self.textFont['weight'], slant=self.textFont['slant'], underline=self.textFont['underline'], overstrike=self.textFont['overstrike'])
         if font:
             font_ = Font(family=font['family'], size=font['size'], weight=font['weight'], slant=font['slant'], underline=font['underline'], overstrike=font['overstrike'])
