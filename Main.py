@@ -4,8 +4,7 @@ import tkinter.filedialog as tkfile
 import os, datetime
 
 class Notepad(Tk):
-    
-    saveDialogCheck = False
+
     filename = ''
 
     def __init__(self) -> None:
@@ -19,12 +18,12 @@ class Notepad(Tk):
     
     def addFileMenu(self):
         self.fileMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
-        self.fileMenu.add_command(label='New', command=self.startNotepad, accelerator='Ctrl+N')
-        self.fileMenu.add_command(label='Open...', accelerator='Ctrl+O', command=self.openFileNotepad)
-        self.fileMenu.add_command(label='Save', accelerator='Ctrl+S', command=self.saveFile)
-        self.fileMenu.add_command(label='Save As...', command=lambda : self.saveFile(saveAs=True))
+        self.fileMenu.add_command(label='New', command=self.__startNotepad, accelerator='Ctrl+N')
+        self.fileMenu.add_command(label='Open...', accelerator='Ctrl+O', command=self.__openFileNotepad)
+        self.fileMenu.add_command(label='Save', accelerator='Ctrl+S', command=self.__saveFile)
+        self.fileMenu.add_command(label='Save As...', command=lambda : self.__saveFile(saveAs=True))
         self.fileMenu.add_separator()
-        self.fileMenu.add_command(label='Exit', command=self.whenExit)
+        self.fileMenu.add_command(label='Exit', command=self.__whenExit)
         self.mainMenu.add_cascade(label='File', menu=self.fileMenu)
 
     def addEditMenu(self):
@@ -45,7 +44,7 @@ class Notepad(Tk):
         self.formatMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
         self.wordWrap = IntVar()
         self.wordWrap.set(1)
-        self.formatMenu.add_checkbutton(label='Word Wrap', variable=self.wordWrap, command=self.wordWrap_)
+        self.formatMenu.add_checkbutton(label='Word Wrap', variable=self.wordWrap, command=self.__wordWrap_)
         self.formatMenu.add_command(label='Font...')
         self.mainMenu.add_cascade(label='Format', menu=self.formatMenu)
 
@@ -53,14 +52,14 @@ class Notepad(Tk):
         self.viewMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
         self.statusBarCheck = IntVar()
         self.statusBarCheck.set(0)
-        self.viewMenu.add_checkbutton(label='Status Bar', variable=self.statusBarCheck, command=self.statusBar_)
+        self.viewMenu.add_checkbutton(label='Status Bar', variable=self.statusBarCheck, command=self.__statusBar_)
         self.mainMenu.add_cascade(label='View', menu=self.viewMenu)
 
     def addHelpMenu(self):
         self.helpMenu = Menu(self.mainMenu, tearoff=0, relief=FLAT, activebackground='#82caff', activeforeground='black', bd=0)
-        self.helpMenu.add_command(label='View Help', command=self.helpNotepad)
+        self.helpMenu.add_command(label='View Help', command=self.__helpNotepad)
         self.helpMenu.add_separator()
-        self.helpMenu.add_command(label='About Notepad', command=self.aboutNotepad)
+        self.helpMenu.add_command(label='About Notepad', command=self.__aboutNotepad)
         self.mainMenu.add_cascade(label='Help', menu=self.helpMenu)
 
     def addTextBox(self):
@@ -88,7 +87,7 @@ class Notepad(Tk):
         self.horizontalScrollbarinfo = self.horizontalScrollbar.pack_info()
         self.horizontalScrollbar.pack_forget()
 
-    def updateNotepad(self):
+    def __updateNotepad(self):
         if self.statusBarCheck.get() and not self.wordWrap.get():
             self.statusBar.pack(self.statusBarinfo)
         if not self.wordWrap.get():
@@ -115,18 +114,18 @@ class Notepad(Tk):
         self.__delete()
         self.textBox.insert('insert', datetime.datetime.now().strftime('%H:%M %d-%m-%Y'))
 
-    def wordWrap_(self):
+    def __wordWrap_(self):
         if self.wordWrap.get():
             self.textBox.config(wrap=WORD)
             self.horizontalScrollbar.pack_forget()
             self.statusBar.pack_forget()
         else:
             self.textBox.config(wrap=NONE)
-            self.updateNotepad()
+            self.__updateNotepad()
     
-    def statusBar_(self):
+    def __statusBar_(self):
         if self.statusBarCheck.get() and not self.wordWrap.get():
-            self.updateNotepad()
+            self.__updateNotepad()
         else:
             self.statusBar.pack_forget()
     
@@ -136,32 +135,32 @@ class Notepad(Tk):
         self.statusBar.config(text=pos)
         self.after(2, self.statusBarUpdate)
 
-    def helpNotepad(self):
+    def __helpNotepad(self):
         tmsg.showinfo('Help', 'This Key Only in Construction, Wait For Website')
 
-    def aboutNotepad(self):
+    def __aboutNotepad(self):
         tmsg.showinfo('About Notepad', 'This is a Notepad made by a Loser In Free Time.')
 
-    def newNote(self):
-        self.textBox.delete("1.0", END)
+    def __newNote(self):
+        self.textBox.delete("0.0", END)
         self.title('Untitled - Notepad')
         self.filename = ''
 
-    def startNotepad(self, event=None):
+    def __startNotepad(self, event=None):
         if self.filename:
             with open(self.filename, 'r') as f:
                 txt = f.read()
             if txt+'\n' == self.textBox.get("1.0", END):
-                self.newNote()
+                self.__newNote()
             else:
-                self.actionForFile(self.newNote)
+                self.__actionForFile(self.__newNote)
         else:
             if self.textBox.get("1.0", END) == '\n':
-                self.newNote()
+                self.__newNote()
             else:
-                self.actionForFile(self.newNote)
+                self.__actionForFile(self.__newNote)
 
-    def openNote(self):
+    def __openNote(self):
         try:
             filename = tkfile.askopenfilename()
             with open(filename, 'r') as f:
@@ -173,21 +172,21 @@ class Notepad(Tk):
         except:
             pass
 
-    def openFileNotepad(self, event=None):
+    def __openFileNotepad(self, event=None):
         if self.filename:
             with open(self.filename, 'r') as f:
                 txt = f.read()
             if txt+'\n' == self.textBox.get("1.0", END):
-                self.openNote()
+                self.__openNote()
             else:
-                self.actionForFile(self.openNote)
+                self.__actionForFile(self.__openNote)
         else:
             if self.textBox.get("1.0", END) == '\n':
-                self.openNote()
+                self.__openNote()
             else:
-                self.actionForFile(self.openNote)
+                self.__actionForFile(self.__openNote)
 
-    def saveFile(self, event=None, saveAs=False):
+    def __saveFile(self, event=None, saveAs=False):
         if self.filename and not saveAs:
             with open(self.filename, 'w') as f:
                 f.write(self.textBox.get("1.0", END)[:-1])
@@ -205,37 +204,37 @@ class Notepad(Tk):
         except:
             return False
 
-    def actionForFile(self, funcToPerform):
+    def __actionForFile(self, funcToPerform):
         dialog = tmsg.askyesnocancel('Notepad', 'Do you want to save this file ?')
         if dialog == None:
             pass
         elif dialog == False:
             funcToPerform()
         else:
-            saved = self.saveFile()
+            saved = self.__saveFile()
             if saved:
                 funcToPerform()
 
-    def whenExit(self, event=None):
+    def __whenExit(self, event=None):
         if self.filename:
             with open(self.filename, 'r') as f:
                 txt = f.read()
             if txt == self.textBox.get("1.0", END)[:-1]:
                 self.quit()
             else:
-                self.actionForFile(self.quit)
+                self.__actionForFile(self.quit)
         else:
             if self.textBox.get("1.0", END) == '\n':
                 self.quit()
             else:
-                self.actionForFile(self.quit)
+                self.__actionForFile(self.quit)
 
     def bindKeys(self):
-        self.bind('<Control-n>', self.startNotepad)
-        self.bind('<Control-o>', self.openFileNotepad)
-        self.bind('<Control-s>', self.saveFile)
-        self.bind('<Control-Shift-s>', lambda x : self.saveFile(saveAs=True))
-        self.protocol('WM_DELETE_WINDOW', self.whenExit)
+        self.bind('<Control-n>', self.__startNotepad)
+        self.bind('<Control-o>', self.__openFileNotepad)
+        self.bind('<Control-s>', self.__saveFile)
+        self.bind('<Control-Shift-s>', lambda x : self.__saveFile(saveAs=True))
+        self.protocol('WM_DELETE_WINDOW', self.__whenExit)
         self.bind('<F5>', self.__Datetime)
         self.bind('<Control-z>', lambda x: self.textBox.event_generate('<<Undo>>'))
         self.bind('<Control-y>', lambda x: self.textBox.event_generate('<<Redo>>'))
