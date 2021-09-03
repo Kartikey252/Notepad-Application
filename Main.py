@@ -17,7 +17,7 @@ class Notepad(Tk):
         super().__init__()
         self.geometry('700x400+250+250')
         self.title('Untitled - Notepad App')
-        self.wm_iconbitmap(r'./icon.ico')
+        self.wm_iconbitmap(r'F:\Notepad - Extra\icon.ico')
 
     def menuBar(self) -> None:
         """ Adds Menubar in App """
@@ -194,7 +194,7 @@ class Notepad(Tk):
 
     def __aboutNotepad(self):
         """ Tells About Notepad """
-        tmsg.showinfo('About Notepad', 'This Notepad is Under Construction.')
+        tmsg.showinfo('About Notepad', 'This is a Notepad made by a Loser In Free Time.')
 
     def __newNote(self):
         """ New Document """
@@ -205,7 +205,7 @@ class Notepad(Tk):
     def __startNotepad(self, event=None):
         """ Make App Run From Beginning """
         if self.__filename:
-            with open(self.__filename, 'r') as f:
+            with open(self.__filename, 'r', encoding='utf-8') as f:
                 txt = f.read()
             if txt+'\n' == self.textBox.get("1.0", END):
                 self.__newNote()
@@ -221,19 +221,19 @@ class Notepad(Tk):
         """ Opens File """
         try:
             filename = tkfile.askopenfilename()
-            with open(filename, 'r') as f:
+            with open(filename, 'r', encoding='utf-8') as f:
                 txt = f.read()
             self.textBox.delete("1.0", END)
             self.textBox.insert("1.0", txt)
             self.title(f'{filename} - Notepad App')
             self.__filename = filename
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     def __openFileNotepad(self, event=None):
         """ Opens A File """
         if self.__filename:
-            with open(self.__filename, 'r') as f:
+            with open(self.__filename, 'r', encoding='utf-8') as f:
                 txt = f.read()
             if txt+'\n' == self.textBox.get("1.0", END):
                 self.__openNote()
@@ -254,13 +254,13 @@ class Notepad(Tk):
                 Run Function for Save Only
         """
         if self.__filename and not saveAs:
-            with open(self.__filename, 'w') as f:
+            with open(self.__filename, 'w', encoding='utf-8') as f:
                 f.write(self.textBox.get("1.0", END)[:-1])
             return True
         try:
             filename = tkfile.asksaveasfilename(initialfile='Untitled.txt', defaultextension='.txt', filetypes=[('All Files', '*.*'), ('Plain Text', '*.txt'), ('Python File', '*.py')])
             if filename:
-                with open(filename, 'w') as f:
+                with open(filename, 'w', encoding='utf-8') as f:
                     f.write(self.textBox.get("1.0", END)[:-1])
                 self.title(f'{filename} - Notepad App')
                 self.__filename = filename
@@ -287,7 +287,7 @@ class Notepad(Tk):
     def __whenExit(self, event=None):
         """ Performed When Exitting App """
         if self.__filename:
-            with open(self.__filename, 'r') as f:
+            with open(self.__filename, 'r', encoding='utf-8') as f:
                 txt = f.read()
             if txt == self.textBox.get("1.0", END)[:-1]:
                 self.quit()
