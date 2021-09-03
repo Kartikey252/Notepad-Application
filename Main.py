@@ -17,6 +17,7 @@ class Notepad(Tk):
         super().__init__()
         self.geometry('700x400+250+250')
         self.title('Untitled - Notepad App')
+        self.wm_iconbitmap(r'./icon.ico')
 
     def menuBar(self) -> None:
         """ Adds Menubar in App """
@@ -193,7 +194,7 @@ class Notepad(Tk):
 
     def __aboutNotepad(self):
         """ Tells About Notepad """
-        tmsg.showinfo('About Notepad', 'This is a Notepad made by a Loser In Free Time.')
+        tmsg.showinfo('About Notepad', 'This Notepad is Under Construction.')
 
     def __newNote(self):
         """ New Document """
