@@ -257,7 +257,7 @@ class Notepad(Tk):
                 f.write(self.textBox.get("1.0", END)[:-1])
             return True
         try:
-            filename = tkfile.asksaveasfilename()
+            filename = tkfile.asksaveasfilename(initialfile='Untitled.txt', defaultextension='.txt', filetypes=[('All Files', '*.*'), ('Plain Text', '*.txt'), ('Python File', '*.py')])
             if filename:
                 with open(filename, 'w') as f:
                     f.write(self.textBox.get("1.0", END)[:-1])
@@ -323,15 +323,35 @@ class Notepad(Tk):
             self.__textFont = font
 
     def addRightClickMenu(self):
-        """ Adds Right Click Menu """
-        self.rightMenu = Menu(self, tearoff=0)
-        self.rightMenu.add_command(label='Undo'+' '*25, command=lambda : self.textBox.event_generate('<<Undo>>'))
+        """ Adds Right Click Menu to App
+        Right Click Menu Contains:
+            Undo -> Erases last change in document
+            Redo -> Redoes the Erased change in document
+            Cut -> Cuts the Selected Part
+            Copy -> Copies the Selected Part
+            Paste -> Paste the Copy/Cut part
+            Delete -> Deletes the Selected Part
+            Select All -> Selects all Document
+            New -> Make App Run From Beginning
+            Open -> Opens A File
+            Save -> Saves File
+            Save As.. -> Saves File as a New One, even if File Exists
+            Exit -> Quits Application
+        """
+        self.rightMenu = Menu(self, tearoff=0, relief=FLAT, bd=0, activebackground='#82caff', activeforeground='black')
+        self.rightMenu.add_command(label='Undo'+' '*29, command=lambda : self.textBox.event_generate('<<Undo>>'))
         self.rightMenu.add_command(label='Redo', command=lambda : self.textBox.event_generate('<<Redo>>'))
         self.rightMenu.add_separator()
         self.rightMenu.add_command(label='Cut', command=lambda : self.textBox.event_generate('<<Cut>>'))
         self.rightMenu.add_command(label='Copy', command=lambda : self.textBox.event_generate('<<Copy>>'))
         self.rightMenu.add_command(label='Paste', command=lambda : self.textBox.event_generate('<<Paste>>'))
+        self.rightMenu.add_command(label='Delete', command=self.__delete)
         self.rightMenu.add_command(label='Select All', command=lambda : self.textBox.tag_add(SEL, '1.0', END))
+        self.rightMenu.add_separator()
+        self.rightMenu.add_command(label='New', command=self.__startNotepad)
+        self.rightMenu.add_command(label='Open...', command=self.__openFileNotepad)
+        self.rightMenu.add_command(label='Save', command=self.__saveFile)
+        self.rightMenu.add_command(label='Save As...', command=lambda : self.__saveFile(saveAs=True))
         self.rightMenu.add_separator()
         self.rightMenu.add_command(label='Exit', command=self.__whenExit)
 
